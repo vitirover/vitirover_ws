@@ -10,7 +10,7 @@ project(mobile_robot)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  sensors_msgs
+  sensor_msgs
   std_msgs
 )
 
