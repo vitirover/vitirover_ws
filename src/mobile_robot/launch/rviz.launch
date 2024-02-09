@@ -1,0 +1,10 @@
+<launch>
+    <!-- Load the robot_description parameter -->
+    <param name="robot_description" command="xacro '$(find mobile_robot)/urdf/vitirover.urdf.xacro'"/>
+
+    <!-- Launch the robot_state_publisher -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+    <!-- Launch RViz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mobile_robot)/config/robot.rviz"/>
+</launch>
