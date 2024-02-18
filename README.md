@@ -42,3 +42,14 @@ With the workspace set up and dependencies installed, you're ready to launch the
 ```
 roslaunch mobile_robot gazebo_sim.launch
 ```
+
+## Testing
+You can send velocity commands to the robot's right rear wheel using:
+
+```
+rostopic pub -1 /vitirover/right_rear_wheel_velocity_controller/command std_msgs/Float64 "data: 1.0"
+```
+
+## Support
+
+For questions, issues, or feature requests, please open an issue on this GitHub repository. We're here to help make your experience with the Vitirover academic robot as smooth as possible.
