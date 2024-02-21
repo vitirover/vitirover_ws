@@ -44,7 +44,7 @@ roslaunch mobile_robot gazebo_sim.launch
 ```
 
 ## Testing
-In a new terminal, after re-sourcing ros and your workspace, You can send velocity commands to the robot's right rear wheel using:
+In a new terminal, after re-sourcing ros and your workspace, you can send velocity commands to the robot's right rear wheel using:
 
 ```
 rostopic pub -1 /vitirover/right_rear_wheel_velocity_controller/command std_msgs/Float64 "data: 1.0"
