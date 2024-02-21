@@ -51,7 +51,12 @@ rostopic pub -1 /vitirover/right_rear_wheel_velocity_controller/command std_msgs
 ```
 ## Using cmd_vel topic 
 
-Navigate to [this script](/src/mobile_robot/scripts/command_robot_gazebo.py) and run in a terminal:
+Open a terminal and navigate to [this script](/src/mobile_robot/scripts/command_robot_gazebo.py) using:
+```
+cd ~/vitirover_ws/src/mobile_robot/scripts
+```
+
+and run:
 ```
 python command_robot_gazebo.py
 ```
