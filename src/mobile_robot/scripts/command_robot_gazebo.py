@@ -1,3 +1,6 @@
+# to run this script, use "python3 command_robot_gazebo.py"
+# and send commands to gazebo in another terminal using "src/mobile_robot/scripts/command_robot_gazebo.py"
+
 import rospy
 import numpy as np
 from math import tan, sin, cos, radians
