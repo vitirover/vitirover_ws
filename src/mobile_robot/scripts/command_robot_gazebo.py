@@ -32,8 +32,8 @@ def joint_states_callback(msg):
         # Find the index of the rear axle joint
         rear_axle_index = msg.name.index('rear_axle_joint')
         # Update the global angle_value_rad with the current angle of the rear axle joint
-        angle_value_rad = -msg.position[rear_axle_index]
-        #print('angle', angle_value_rad)
+        angle_value_rad = msg.position[rear_axle_index]
+
     except ValueError as e:
         rospy.logerr("Rear axle joint not found in joint states: {}".format(e))
 
