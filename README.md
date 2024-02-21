@@ -49,9 +49,17 @@ In a new terminal, after re-sourcing ros and your workspace, you can send veloci
 ```
 rostopic pub -1 /vitirover/right_rear_wheel_velocity_controller/command std_msgs/Float64 "data: 1.0"
 ```
+## Using cmd_vel topic 
 
-To go further, you can control the robot using the *teleops-twist-keyboard* package and this script to use directly our motion equations using [this script](/src/mobile_robot/scripts/command_robot_gazebo.py).
+Navigate to [this script](/src/mobile_robot/scripts/command_robot_gazebo.py) and run in a terminal:
+```
+python command_robot_gazebo.py
+```
 
+Open an other terminal and run 
+```
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
 ## Support
 
 For questions, issues, or feature requests, please open an issue on this GitHub repository. We're here to help make your experience with the Vitirover academic robot as smooth as possible.
