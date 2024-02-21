@@ -3,9 +3,10 @@ import numpy as np
 from math import tan, sin, cos, radians
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64
+from sensor_msgs.msg import JointState
 
 # Robot dimensions
-e = 0.340  # Track width (m)
+e = 0.375  # Track width (m)
 r = 0.088  # Wheel radius (m)
 x = 0.400  # Distance from the robot center to the wheel
 
@@ -13,23 +14,35 @@ x = 0.400  # Distance from the robot center to the wheel
 v = 0.0
 omega = 0.0
 
+# Initialize the rear axle angle in radians
+angle_value_rad = 0.0
+
 def cmd_vel_callback(data):
     global v, omega
     v = data.linear.x
     omega = data.angular.z
-    calculate_wheel_velocities()
+    # Moved calculate_wheel_velocities() call to the main loop
+
+def joint_states_callback(msg):
+    global angle_value_rad
+    try:
+        # Find the index of the rear axle joint
+        rear_axle_index = msg.name.index('rear_axle_joint')
+        # Update the global angle_value_rad with the current angle of the rear axle joint
+        angle_value_rad = -msg.position[rear_axle_index]
+        #print('angle', angle_value_rad)
+    except ValueError as e:
+        rospy.logerr("Rear axle joint not found in joint states: {}".format(e))
 
 def calculate_wheel_velocities():
-    global angle_value_rad
-    # Convert angle from degrees to radians for calculation
-    angle_value_rad = radians(10)  # Example angle, replace with actual telemetry data
+    global angle_value_rad, v, omega
 
     # Matrix A calculation using the current back axle angle
     A = np.array([
-        [(x + e * tan(angle_value_rad) / 2) / x * r, 0],
-        [(x - e * tan(angle_value_rad) / 2) / x * r, 0],
-        [(x + e * sin(angle_value_rad) / 2) / x * r * cos(angle_value_rad), -e / 2 * r],
-        [(x - e * sin(angle_value_rad) / 2) / x * r * cos(angle_value_rad), e / 2 * r]
+        [(x + e * tan(angle_value_rad) / 2) / (x * r), 0],
+        [(x - e * tan(angle_value_rad) / 2) / (x * r), 0],
+        [(x + e * sin(angle_value_rad) / 2) / (x * r * cos(angle_value_rad)), -e / (2 * r)],
+        [(x - e * sin(angle_value_rad) / 2) / (x * r * cos(angle_value_rad)), e / (2 * r)]
     ])
 
     # Calculate wheel velocities
@@ -51,7 +64,9 @@ def publish_wheel_velocities(wG, wH, wI, wJ):
 if __name__ == '__main__':
     rospy.init_node('vitirover_wheel_velocity_controller')
     
+    # Subscribe to cmd_vel and joint_states topics
     rospy.Subscriber("/cmd_vel", Twist, cmd_vel_callback)
+    rospy.Subscriber("/vitirover/joint_states", JointState, joint_states_callback)
     
     # Initialize publishers for each wheel
     front_left_pub = rospy.Publisher('/vitirover/left_front_wheel_velocity_controller/command', Float64, queue_size=10)
@@ -59,4 +74,7 @@ if __name__ == '__main__':
     rear_left_pub = rospy.Publisher('/vitirover/left_rear_wheel_velocity_controller/command', Float64, queue_size=10)
     rear_right_pub = rospy.Publisher('/vitirover/right_rear_wheel_velocity_controller/command', Float64, queue_size=10)
     
-    rospy.spin()
+    rate = rospy.Rate(10)  # 10Hz
+    while not rospy.is_shutdown():
+        calculate_wheel_velocities()
+        rate.sleep()
