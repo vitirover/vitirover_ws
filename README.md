@@ -34,7 +34,7 @@ source devel/setup.bash
 
 Before starting the simulation, make sure all the necessary dependencies are installed:
 ```
-sudo apt install ros-noetic-joint-state-publisher ros-noetic-ros-control ros-noetic-ros-controllers
+sudo apt install ros-noetic-joint-state-publisher ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-teleop-twist-keyboard
 ```
 
 ## Start the simulation
@@ -49,6 +49,8 @@ In a new terminal, after re-sourcing ros and your workspace, you can send veloci
 ```
 rostopic pub -1 /vitirover/right_rear_wheel_velocity_controller/command std_msgs/Float64 "data: 1.0"
 ```
+
+To go further, you can control the robot using the *teleops-twist-keyboard* package and this script to use directly our motion equations using [this script](/src/mobile_robot/scripts/command_robot_gazebo.py).
 
 ## Support
 
