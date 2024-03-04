@@ -37,7 +37,7 @@ Before starting the simulation, make sure all the necessary dependencies are ins
 sudo apt install ros-noetic-joint-state-publisher ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-teleop-twist-keyboard
 ```
 
-## Start the simulation
+## Start the simulation in Gazebo
 With the workspace set up and dependencies installed, you're ready to launch the Vitirover simulation:
 ```
 roslaunch mobile_robot gazebo_sim.launch
@@ -68,6 +68,21 @@ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 
 Use the commands on your keyboard (u,i,o...) to move the robot in Gazebo. 
 NB: Reduce the linear and angular for a smooth motion, i.e. 0.3 m/s for linear velocity and 0.3 rad/s for the angular velocity.
+
+## Use rviz
+
+Rviz allows you to visualize your physical robot and the sensors in the same graphical interface.
+
+
+Open an other terminal and run 
+```
+roslaunch mobile_robot rviz.launch
+```
+
+You see you robot in rviz like this:
+
+
+
 ## Support
 
 For questions, issues, or feature requests, please open an issue on this GitHub repository. We're here to help make your experience with the Vitirover academic robot as smooth as possible.
