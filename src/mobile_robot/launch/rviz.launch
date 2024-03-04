@@ -10,5 +10,5 @@
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
     
     <!-- Launch RViz -->
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mobile_robot)/rviz/rviz_config.rviz" />
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mobile_robot)/config/robot.rviz" />
 </launch>
