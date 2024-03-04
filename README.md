@@ -43,6 +43,11 @@ With the workspace set up and dependencies installed, you're ready to launch the
 roslaunch mobile_robot gazebo_sim.launch
 ```
 
+You should see the robot in Gazebo like this:
+
+![GazeboVitirover](https://github.com/vitirover/vitirover_ws/assets/91953623/8205144c-d27a-4c6e-99cf-a34a7fab25d0)
+
+
 ## Testing
 In a new terminal, after re-sourcing ros and your workspace, you can send velocity commands to the robot's right rear wheel using:
 
