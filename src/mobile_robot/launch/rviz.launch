@@ -1,11 +1,14 @@
 <launch>
     <!-- Load the URDF into the robot_description parameter -->
     <param name="robot_description"
-           command="$(find xacro)/xacro --inorder '$(find mobile_robot)/urdf/vitirover_gazebo.urdf'"/>
+           command="$(find xacro)/xacro --inorder '$(find mobile_robot)/urdf/vitirover_gazebo.urdf'" />
 
     <!-- Run the robot_state_publisher -->
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
+    <!-- Optionally run the joint_state_publisher for static or manually controlled robots -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    
     <!-- Launch RViz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mobile_robot)/rviz/your_rviz_config.rviz" />
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find mobile_robot)/rviz/rviz_config.rviz" />
 </launch>
