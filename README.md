@@ -81,6 +81,7 @@ roslaunch mobile_robot rviz.launch
 
 You see you robot in rviz like this:
 
+![RvizVitirover](https://github.com/vitirover/vitirover_ws/assets/91953623/058e44a3-a07b-41de-b8be-cfb401b83185)
 
 
 ## Support
