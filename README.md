@@ -74,6 +74,31 @@ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 Use the commands on your keyboard (u,i,o...) to move the robot in Gazebo. 
 NB: Reduce the linear and angular for a smooth motion, i.e. 0.3 m/s for linear velocity and 0.3 rad/s for the angular velocity.
 
+## Move the robot
+
+In order to control the robot with the cmd_vel topic, open a terminal and start roscore:
+
+```
+cd ~/vitirover_ws/
+source devel/setup.bash
+roscore
+```
+
+In an other terminal, navigate to vitirover_bringup with and start the script to command the wheels with ROS:
+```
+cd ~/vitirover_ws/
+source devel/setup.bash
+cd /mobile_robot/vitirover_bringup
+python3 command_ROS.py
+```
+
+In a third terminal: 
+```
+cd ~/vitirover_ws/
+source devel/setup.bash
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
+
 ## Use rviz
 
 Rviz allows you to visualize your physical robot and the sensors in the same graphical interface.
