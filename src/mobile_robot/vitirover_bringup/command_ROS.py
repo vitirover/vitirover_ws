@@ -31,7 +31,7 @@ def cmd_vel_callback(data):
 
 # Socket setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("YOUR.IP.HERRE", 5005))
+sock.bind(("YOUR.IP.HERE", 5005))
 sock.setblocking(0)
 
 # Initialize ROS
@@ -81,7 +81,7 @@ while running and not rospy.is_shutdown():
     order.low_level_order.back_right_speed = int(wJ * 8)
 
     data = order.SerializeToString()
-    sock.sendto(data, ("192.168.1.42", 5005)) #Robot IP here
+    sock.sendto(data, ("192.168.2.42", 5005)) #Robot IP here
 
     telemetry_data = None
     while True:
