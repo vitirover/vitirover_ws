@@ -6,7 +6,7 @@
       <robotNamespace>/vitirover</robotNamespace>
     </plugin>
   </gazebo>
-
+  
   <!-- Wheels -->
   <!-- in kg-->
   <!-- Defining the colors used in this robot -->
@@ -35,26 +35,10 @@
   <!-- in kg-->
   <!-- BASE-FOOTPRINT -->
   <!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
-  
+  <link name="base_footprint"/>
   <gazebo reference="base_footprint">
     <material>Gazebo/DarkGrey</material>
   </gazebo>
-  <link name="map"/>
-  <link name="base_footprint">
-    <visual>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
-      <geometry>
-        <box size="0.001 0.001 0.001"/>
-      </geometry>
-    </visual>
-  </link>
-
-  <joint name="fixed" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-    <parent link="map"/>
-    <child link="base_footprint"/>
-  </joint>
-
   <joint name="base_footprint_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0.1"/>
     <parent link="base_footprint"/>
@@ -143,7 +127,7 @@
   <joint name="front_right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="front_right_wheel"/>
-    <origin rpy="0 0 0" xyz="0.2 0.1875 0.0"/>
+    <origin rpy="0 0 0" xyz="0.2 -0.1875 0.0"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties  damping="0.3" friction="0.1"/>
@@ -215,7 +199,7 @@
   <joint name="front_left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="front_left_wheel"/>
-    <origin rpy="0 0 0" xyz="0.2 -0.1875 0.0"/>
+    <origin rpy="0 0 0" xyz="0.2 0.1875 0.0"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties  damping="0.3" friction="0.1"/>
@@ -434,7 +418,7 @@
   <joint name="rear_left_wheel_axle_joint" type="continuous">
     <parent link="rear_axle"/>
     <child link="rear_left_wheel"/>
-    <origin rpy="1.570796 0 0" xyz="0 0 -0.1875"/>
+    <origin rpy="1.570796 0 0" xyz="0 0 0.1875"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties  damping="0.3" friction="0.1"/>
@@ -455,7 +439,7 @@
   <joint name="rear_right_wheel_axle_joint" type="continuous">
     <parent link="rear_axle"/>
     <child link="rear_right_wheel"/>
-    <origin rpy="1.570796 0 0" xyz="0 0 0.1875"/>
+    <origin rpy="1.570796 0 0" xyz="0 0 -0.1875"/>
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties  damping="0.3" friction="0.1"/>
@@ -472,13 +456,5 @@
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
-    <!-- Joint state publisher plugin -->
-  <gazebo>
-    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
-        <robotNamespace>vitirover</robotNamespace>
-        <jointName>left_front_wheel_velocity_controller, right_front_wheel_velocity_controller, left_rear_wheel_velocity_controller, right_rear_wheel_velocity_controller, rear_axle_position_controller</jointName>
-        <updateRate>100</updateRate>
-    </plugin>
-  </gazebo>
 
 </robot>
