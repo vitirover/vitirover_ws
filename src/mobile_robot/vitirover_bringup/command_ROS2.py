@@ -1,12 +1,12 @@
 import rospy
 import pygame
-import math
 from geometry_msgs.msg import Twist, PoseStamped
 import std_msgs.msg
 import socket
 import telemetry_pb2 as telemetry_pb2
 from google.protobuf.text_format import MessageToString
-import math
+import numpy as np
+from math import tan, sin, cos, radians
 
 # Linear and angular velocity
 v = 0
