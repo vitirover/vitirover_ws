@@ -6,7 +6,7 @@ import socket
 import telemetry_pb2 as telemetry_pb2
 from google.protobuf.text_format import MessageToString
 import numpy as np
-from math import tan, sin, cos, radians
+from math import tan, sin, cos, radians, pi
 
 # Linear and angular velocity
 v = 0
@@ -59,9 +59,6 @@ while running and not rospy.is_shutdown():
 
     # Calculate wheel velocities
     wRoues = np.dot(A, np.array([v, omega]))
-
-    # Publish wheel velocities
-    publish_wheel_velocities(wRoues[0], wRoues[1], wRoues[2], wRoues[3])
     
     wG = wRoues[0]
     wH = wRoues[1]
