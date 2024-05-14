@@ -15,8 +15,6 @@ omega = 0.001
 e = 0.340  # Track width (m)
 r = 0.088  # Wheel radius (m)
 x = 0.400 
-dt = 1/60.0
-robot_orientation = 0.0001
 
 # Robot properties
 robot_width, robot_height = 35, 18
@@ -37,8 +35,6 @@ sock.setblocking(0)
 # Initialize ROS
 rospy.init_node('vitirover_simulation', anonymous=True)
 rospy.Subscriber("cmd_vel", Twist, cmd_vel_callback)
-pose_pub = rospy.Publisher("robot_pose", PoseStamped, queue_size=10)
-axle_angle_pub = rospy.Publisher("back_axle_angle", std_msgs.msg.Float64, queue_size=10)
 
 # Main loop
 rate = rospy.Rate(10)
@@ -46,13 +42,14 @@ running = True
 count = 0
 count1 = 0
 factor = 1
+
 while running and not rospy.is_shutdown():
     data, _ = sock.recvfrom(20000)
     telemetry_data = telemetry_pb2.VitiroverTelemetry()
     telemetry_data.ParseFromString(data)
 
     angle_value = telemetry_data.back_axle_angle
-    #print("angle value: ", angle_value)
+    print("angle value: ", angle_value)
     # Robot motion simulation logic
 
     # Matrix A calculation using the current back axle angle
