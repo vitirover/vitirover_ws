@@ -6,6 +6,7 @@ import std_msgs.msg
 import socket
 import telemetry_pb2 as telemetry_pb2
 from google.protobuf.text_format import MessageToString
+import math
 
 # Linear and angular velocity
 v = 0
@@ -15,11 +16,6 @@ omega = 0.001
 e = 0.340  # Track width (m)
 r = 0.088  # Wheel radius (m)
 x = 0.400 
-
-# Robot properties
-robot_width, robot_height = 35, 18
-robot_x, robot_y = 0, 0
-robot_orientation = 0.001
 
 # ROS Callback
 def cmd_vel_callback(data):
@@ -39,8 +35,6 @@ rospy.Subscriber("cmd_vel", Twist, cmd_vel_callback)
 # Main loop
 rate = rospy.Rate(10)
 running = True
-count = 0
-count1 = 0
 factor = 1
 
 while running and not rospy.is_shutdown():
@@ -48,10 +42,13 @@ while running and not rospy.is_shutdown():
     telemetry_data = telemetry_pb2.VitiroverTelemetry()
     telemetry_data.ParseFromString(data)
 
-    angle_value = telemetry_data.back_axle_angle
-    print("angle value: ", angle_value)
-    # Robot motion simulation logic
+    angle_in_degrees = telemetry_data.back_axle_angle
 
+    # Conversion de degrés en radians
+    angle_value = angle_in_degrees * (math.pi / 180)
+    print("angle value: ", angle_value)
+    
+    # Robot motion simulation logic
     # Matrix A calculation using the current back axle angle
     A = np.array([
         [(x + e * tan(angle_value) / 2) / (x * r), 0],
@@ -66,8 +63,6 @@ while running and not rospy.is_shutdown():
     # Publish wheel velocities
     publish_wheel_velocities(wRoues[0], wRoues[1], wRoues[2], wRoues[3])
     
-    R = x / (math.tan(omega * dt) + 0.00001)
-
     wG = wRoues[0]
     wH = wRoues[1]
     wI = wRoues[2]
