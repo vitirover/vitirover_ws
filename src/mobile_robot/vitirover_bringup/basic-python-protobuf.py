@@ -18,7 +18,7 @@ import time
 from google.protobuf.text_format import MessageToString
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("192.168.1.106", 5005))
+sock.bind(("192.168.2.106", 5005))
 sock.setblocking(0)
 
 
@@ -36,7 +36,8 @@ while True:
     data = order.SerializeToString()
 
     try:
-        sock.sendto(data, ("192.168.1.42", 5005))
+        sock.sendto(data, ("192.168.2.42", 5005))
+        print("titi")
     except BlockingIOError:
         print("erreur on sendto")
         pass
