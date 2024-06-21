@@ -6,6 +6,13 @@ Welcome to the GitHub repository for the Vitirover academic robot! This reposito
 
 Ensure you have ROS Noetic installed on your system. This workspace has been tested and confirmed to work with ROS Noetic.
 
+Note : the Jetson nano only supports ROS Melodic.
+But we have chosen to give instructions for ROS using the most up-to-date ROS1 version, Noetic, because most users will use their own development computer to use gazebo and to develop software in a confortable environment.
+
+These steps have been tested for Noetic, but since we use only basic ROS functions, it should also work for Melodic without much change.
+If any problem is found, we will document them here, feel free to open an issue or a pull-request.
+
+
 ## Setup
 
 First, clone this repository into your desired directory. If you haven't already created a directory for the Vitirover workspace, you can do so by following these steps:
