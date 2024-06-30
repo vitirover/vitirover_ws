@@ -1,5 +1,4 @@
 import rospy
-import pygame
 import math
 from geometry_msgs.msg import Twist, PoseStamped
 import std_msgs.msg
@@ -143,5 +142,3 @@ while running and not rospy.is_shutdown():
         #print("wJ/wJBFM: ", wJ/(telemetry_data.back_right_wheel.back_electromotive_force+0.0001))
 
     rate.sleep()
-
-pygame.quit(),
