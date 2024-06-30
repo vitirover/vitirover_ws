@@ -17,8 +17,13 @@ import time
 
 from google.protobuf.text_format import MessageToString
 
+
+# to communicate with the robot throught ethernet, you must first set up your connection using
+# on jetson : sudo ifconfig eth0 up 192.168.2.106 netmask 255.255.255.0
+# example on an ubuntu linux : sudo ifconfig enp56s0 up 192.168.2.106 netmask 255.255.255.0
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("192.168.1.106", 5005))
+sock.bind(("192.168.2.106", 5005))
 sock.setblocking(0)
 
 
@@ -36,7 +41,7 @@ while True:
     data = order.SerializeToString()
 
     try:
-        sock.sendto(data, ("192.168.1.42", 5005))
+        sock.sendto(data, ("192.168.2.42", 5005))
     except BlockingIOError:
         print("erreur on sendto")
         pass
