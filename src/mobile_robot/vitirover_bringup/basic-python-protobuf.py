@@ -22,6 +22,13 @@ from google.protobuf.text_format import MessageToString
 # on jetson : sudo ifconfig eth0 up 192.168.2.106 netmask 255.255.255.0
 # example on an ubuntu linux : sudo ifconfig enp56s0 up 192.168.2.106 netmask 255.255.255.0
 
+
+# On Windows 11: Settings => Network & Internet => Ethernet =>
+# IP assignment => Edit => Manual
+# 192.168.2.106,
+# Subnet mask: netmask 255.255.255.0
+
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(("192.168.2.106", 5005))
 sock.setblocking(0)
