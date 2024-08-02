@@ -1,0 +1,5 @@
+int32 milli_amps
+int32 power
+int32 back_electromotive_force
+int32 rotations_per_minute
+int32 meters_per_hour
