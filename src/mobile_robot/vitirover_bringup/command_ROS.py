@@ -3,13 +3,11 @@ import math
 
 # source devel/setup.bash to be able to import them
 from geometry_msgs.msg import Twist, PoseStamped 
-from mobile_robot.msg import VitiroverMowerOrder
+from mobile_robot.msg import VitiroverMowerOrder, VitiroverTelemetry, MotorData
 import std_msgs.msg
 import socket
 import telemetry_pb2 as telemetry_pb2
 from google.protobuf.text_format import MessageToString
-
-
 
 # if there is a problem with protobuf's version, you can try : 
 # export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
@@ -50,6 +48,72 @@ def mower_order_callback(data):
     print("received mower order")
 
 
+def protobuf_to_ros(protobuf_data):
+    # Parse the protobuf data
+    telemetry_protobuf = telemetry_pb2.VitiroverTelemetry()
+    telemetry_protobuf.ParseFromString(protobuf_data)
+    
+    # Create a ROS message
+    telemetry_ros = VitiroverTelemetry()
+
+    # Map protobuf fields to ROS message fields
+    telemetry_ros.robot_id = telemetry_protobuf.robot_id
+    telemetry_ros.position.lat = telemetry_protobuf.position.lat
+    telemetry_ros.position.lng = telemetry_protobuf.position.lng
+    telemetry_ros.error_gnss_cm = telemetry_protobuf.error_gnss_cm
+    telemetry_ros.heading = telemetry_protobuf.heading
+    telemetry_ros.battery_voltage = telemetry_protobuf.battery_voltage
+    telemetry_ros.back_axle_angle = telemetry_protobuf.back_axle_angle
+    telemetry_ros.sun_charge = telemetry_protobuf.sun_charge
+    telemetry_ros.wifi_is_up = telemetry_protobuf.wifi_is_up
+    telemetry_ros.roll = telemetry_protobuf.roll
+    telemetry_ros.pitch = telemetry_protobuf.pitch
+    telemetry_ros.timestamp_seconds = telemetry_protobuf.timestamp_seconds
+    telemetry_ros.timestamp_milliseconds = telemetry_protobuf.timestamp_milliseconds
+    telemetry_ros.gyroscope_x = telemetry_protobuf.gyroscope_x
+    telemetry_ros.gyroscope_y = telemetry_protobuf.gyroscope_y
+    telemetry_ros.gyroscope_z = telemetry_protobuf.gyroscope_z
+    telemetry_ros.accelerometer_x = telemetry_protobuf.accelerometer_x
+    telemetry_ros.accelerometer_y = telemetry_protobuf.accelerometer_y
+    telemetry_ros.accelerometer_z = telemetry_protobuf.accelerometer_z
+    telemetry_ros.magnetometer_x = telemetry_protobuf.magnetometer_x
+    telemetry_ros.magnetometer_y = telemetry_protobuf.magnetometer_y
+    telemetry_ros.magnetometer_z = telemetry_protobuf.magnetometer_z
+
+    # Define wheel positions
+    wheel_positions = ['front_left', 'front_right', 'back_right', 'back_left']
+    
+    # Map motor data for wheels and mowers
+    for position in wheel_positions:
+        motor_data_protobuf = getattr(telemetry_protobuf, f"{position}_wheel")
+        motor_data_ros = MotorData(
+            milli_amps=motor_data_protobuf.milli_amps,
+            power=motor_data_protobuf.power,
+            back_electromotive_force=motor_data_protobuf.back_electromotive_force,
+            rotations_per_minute=motor_data_protobuf.rotations_per_minute,
+            meters_per_hour=motor_data_protobuf.meters_per_hour
+        )
+        setattr(telemetry_ros, f"{position}_wheel", motor_data_ros)
+
+    # Map motor data for mowers
+    telemetry_ros.left_mower = MotorData(
+        milli_amps=telemetry_protobuf.left_mower.milli_amps,
+        power=telemetry_protobuf.left_mower.power,
+        back_electromotive_force=telemetry_protobuf.left_mower.back_electromotive_force,
+        rotations_per_minute=telemetry_protobuf.left_mower.rotations_per_minute,
+        meters_per_hour=telemetry_protobuf.left_mower.meters_per_hour
+    )
+    telemetry_ros.right_mower = MotorData(
+        milli_amps=telemetry_protobuf.right_mower.milli_amps,
+        power=telemetry_protobuf.right_mower.power,
+        back_electromotive_force=telemetry_protobuf.right_mower.back_electromotive_force,
+        rotations_per_minute=telemetry_protobuf.right_mower.rotations_per_minute,
+        meters_per_hour=telemetry_protobuf.right_mower.meters_per_hour
+    )
+
+    return telemetry_ros
+
+
 # Socket setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -66,6 +130,7 @@ rospy.Subscriber("cmd_vel", Twist, cmd_vel_callback)
 rospy.Subscriber("mower_order", VitiroverMowerOrder, mower_order_callback)
 pose_pub = rospy.Publisher("robot_pose", PoseStamped, queue_size=10)
 axle_angle_pub = rospy.Publisher("back_axle_angle", std_msgs.msg.Float64, queue_size=10)
+telemetry_pub = rospy.Publisher('telemetry', VitiroverTelemetry, queue_size=10)
 
 # Main loop
 rate = rospy.Rate(10)
@@ -187,5 +252,8 @@ while running and not rospy.is_shutdown():
         #print("wH/wHBFM: ", wH/(telemetry_data.front_right_wheel.back_electromotive_force+0.0001))
         #print("wI/wIBFM: ", wI/(telemetry_data.back_left_wheel.back_electromotive_force+0.0001))
         #print("wJ/wJBFM: ", wJ/(telemetry_data.back_right_wheel.back_electromotive_force+0.0001))
+
+        telemetry_ros = protobuf_to_ros(data)
+        telemetry_pub.publish(telemetry_ros)
 
     rate.sleep()
