@@ -1,5 +1,4 @@
 import rospy
-import pygame
 import math
 from geometry_msgs.msg import Twist, PoseStamped
 import std_msgs.msg
@@ -31,7 +30,12 @@ def cmd_vel_callback(data):
 
 # Socket setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("192.168.2.106", 5005))
+
+# to communicate with the robot throught ethernet, you must first set up your internet connection, for example 
+# sudo ifconfig enp56s0 up 192.168.2.106 netmask 255.255.255.0
+
+# sock.bind(("192.168.2.106", 5005))
+sock.bind(("YOUR IP HERE", 5005))
 sock.setblocking(0)
 
 # Initialize ROS
@@ -61,6 +65,17 @@ while running and not rospy.is_shutdown():
     if v == 0:
         wG = wH = wI = wJ = 0
 
+    # if v < 0:
+    #     wG = -wG
+    #     wH = -wH
+    #     wI = -wI
+    #     wJ = -wJ
+
+    print("omega : " + str(omega))
+    print('wG: ', wG)
+    print('wH: ', wH)
+    print('wI: ', wI)
+    print('wJ: ', wJ)
     # if v < 0:
     #     wG = -wG
     #     wH = -wH
@@ -105,8 +120,16 @@ while running and not rospy.is_shutdown():
 
     print(order)
 
+    print(order)
+
     data = order.SerializeToString()
     sock.sendto(data, ("192.168.2.42", 5005)) #Robot IP here
+    
+    # data, _ = sock.recvfrom(20000)
+    # telemetry_data = telemetry_pb2.VitiroverTelemetry()
+    # telemetry_data.ParseFromString(data)
+    # angle_value = telemetry_data.back_axle_angle
+    print("angle value: ", angle_value)
     
     # data, _ = sock.recvfrom(20000)
     # telemetry_data = telemetry_pb2.VitiroverTelemetry()
@@ -127,6 +150,9 @@ while running and not rospy.is_shutdown():
         print(telemetry_data)
         angle_value = telemetry_data.back_axle_angle
 
+        print(telemetry_data)
+        angle_value = telemetry_data.back_axle_angle
+
         # Afficher quelques valeurs
         #print("Motor Data:", telemetry_data.front_left_wheel.back_electromotive_force)
         #print("wG/wGBFM: ", wG/(telemetry_data.front_left_wheel.back_electromotive_force+0.0001))
@@ -135,5 +161,3 @@ while running and not rospy.is_shutdown():
         #print("wJ/wJBFM: ", wJ/(telemetry_data.back_right_wheel.back_electromotive_force+0.0001))
 
     rate.sleep()
-
-pygame.quit(),
