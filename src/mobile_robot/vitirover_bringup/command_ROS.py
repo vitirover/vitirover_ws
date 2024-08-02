@@ -1,14 +1,29 @@
 import rospy
 import math
-from geometry_msgs.msg import Twist, PoseStamped
+
+# source devel/setup.bash to be able to import them
+from geometry_msgs.msg import Twist, PoseStamped 
+from mobile_robot.msg import VitiroverMowerOrder
 import std_msgs.msg
 import socket
 import telemetry_pb2 as telemetry_pb2
 from google.protobuf.text_format import MessageToString
 
+
+
+# if there is a problem with protobuf's version, you can try : 
+# export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
+
 # Linear and angular velocity
 v = 0
 omega = 0.001
+
+# BE CAREFUL WITH MOWER COMMANDS
+# mower commands
+left_mower_speed = 0
+right_mower_speed = 0
+
 
 # Constants for the robot
 e = 0.340  # Track width (m)
@@ -28,19 +43,27 @@ def cmd_vel_callback(data):
     v = data.linear.x
     omega = data.angular.z
 
+def mower_order_callback(data):
+    global left_mower_speed, right_mower_speed
+    left_mower_speed = data.left_mower_speed
+    right_mower_speed = data.right_mower_speed
+    print("received mower order")
+
+
 # Socket setup
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # to communicate with the robot throught ethernet, you must first set up your internet connection, for example 
 # sudo ifconfig enp56s0 up 192.168.2.106 netmask 255.255.255.0
 
-# sock.bind(("192.168.2.106", 5005))
-sock.bind(("YOUR IP HERE", 5005))
+# sock.bind(("YOUR IP HERE", 5005))
+sock.bind(("192.168.2.106", 5005))
 sock.setblocking(0)
 
 # Initialize ROS
 rospy.init_node('vitirover_simulation', anonymous=True)
 rospy.Subscriber("cmd_vel", Twist, cmd_vel_callback)
+rospy.Subscriber("mower_order", VitiroverMowerOrder, mower_order_callback)
 pose_pub = rospy.Publisher("robot_pose", PoseStamped, queue_size=10)
 axle_angle_pub = rospy.Publisher("back_axle_angle", std_msgs.msg.Float64, queue_size=10)
 
@@ -124,19 +147,24 @@ while running and not rospy.is_shutdown():
 
     data = order.SerializeToString()
     sock.sendto(data, ("192.168.2.42", 5005)) #Robot IP here
-    
-    # data, _ = sock.recvfrom(20000)
-    # telemetry_data = telemetry_pb2.VitiroverTelemetry()
-    # telemetry_data.ParseFromString(data)
-    # angle_value = telemetry_data.back_axle_angle
-    print("angle value: ", angle_value)
-    
-    # data, _ = sock.recvfrom(20000)
-    # telemetry_data = telemetry_pb2.VitiroverTelemetry()
-    # telemetry_data.ParseFromString(data)
-    # angle_value = telemetry_data.back_axle_angle
-    print("angle value: ", angle_value)
 
+
+    if right_mower_speed != 0 or left_mower_speed != 0:
+        mower_order = telemetry_pb2.VitiroverMowerOrder()
+        mower_order.left_mower_speed = left_mower_speed
+        mower_order.right_mower_speed = right_mower_speed
+        order = telemetry_pb2.VitiroverOrder()
+        order.mower_order.CopyFrom(mower_order)
+        mower_data = order.SerializeToString()
+        sock.sendto(mower_data, ("192.168.2.42", 5005)) #Robot IP here
+
+    
+    # data, _ = sock.recvfrom(20000)
+    # telemetry_data = telemetry_pb2.VitiroverTelemetry()
+    # telemetry_data.ParseFromString(data)
+    # angle_value = telemetry_data.back_axle_angle
+    print("angle value: ", angle_value)
+    
     telemetry_data = None
     while True:
         try:
