@@ -1,6 +1,8 @@
 import rospy
 import math
 
+import time
+
 # source devel/setup.bash to be able to import them
 from geometry_msgs.msg import Twist, PoseStamped 
 from mobile_robot.msg import VitiroverMowerOrder, VitiroverTelemetry, MotorData
@@ -236,6 +238,7 @@ while running and not rospy.is_shutdown():
             data, addr = sock.recvfrom(20000)  # Buffer size
             telemetry_data = telemetry_pb2.VitiroverTelemetry()
         except BlockingIOError:
+            time.sleep(0.03)  # petite pause. Le robot est à 10Hz.
             # Plus de messages dans le buffer, sortir de la boucle
             break
     if telemetry_data != None:
